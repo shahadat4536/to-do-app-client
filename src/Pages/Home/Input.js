@@ -1,15 +1,19 @@
 import React from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import auth from "../../firebase.init";
 
 const Input = () => {
+  const [user, loading, error] = useAuthState(auth);
   const handleTask = (event) => {
     event.preventDefault();
     const task = event.target.task.value;
     const description = event.target.description.value;
+    const email = user.email;
     const taskData = { task, description };
 
-    fetch("http://localhost:5000/tasks", {
+    fetch("https://murmuring-ridge-09481.herokuapp.com/tasks", {
       method: "POST",
-      body: JSON.stringify(taskData),
+      body: JSON.stringify({ task, description, email }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -31,12 +35,14 @@ const Input = () => {
               placeholder="Task Name"
               name="task"
               class="input w-full max-w-xs text-black"
+              required
             />
             <input
               type="text"
               placeholder="Description"
               name="description"
               class="input input-bordered w-full max-w-xs text-black"
+              required
             />
             <input
               type="submit"
